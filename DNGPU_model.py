@@ -133,7 +133,7 @@ class DNGPU:
         # create mask
         mask_1 = tf.cast(tf.equal(x_in_indices, 0), tf.float32)
         mask_2 = tf.cast(tf.equal(y_in, 0), tf.float32)
-        mask = tf.pack([1.0-mask_1*mask_2]*self.num_units,axis=2)
+        mask = tf.stack([1.0-mask_1*mask_2]*self.num_units,axis=2)
 
         # the input layer
         x_in = tf.one_hot(x_in_indices, self.n_input, dtype=tf.float32)
@@ -153,9 +153,9 @@ class DNGPU:
                 gruScope.reuse_variables()
 
         # output layer and loss
-        allMem_tensor = tf.pack(allMem)
+        allMem_tensor = tf.stack(allMem)
         prediction = self.conv_linear(cur, 1, self.num_units, self.n_classes, 0.0, "output")
-        costVector = tf.nn.sparse_softmax_cross_entropy_with_logits(prediction, y_in)  # Softmax loss
+        costVector = tf.nn.sparse_softmax_cross_entropy_with_logits(logits = prediction, labels = y_in)  # Softmax loss
 
         result = tf.argmax(prediction, 2)
         correct_pred = tf.equal(result, y_in)
@@ -210,7 +210,7 @@ class DNGPU:
         self.base_cost /= sum_weight
         self.accuracy /= num_sizes
 
-        self.sat_loss = tf.reduce_sum(tf.pack(saturation_loss))*self.saturation_weight / sum_weight
+        self.sat_loss = tf.reduce_sum(tf.stack(saturation_loss))*self.saturation_weight / sum_weight
         cost = self.base_cost + self.sat_loss
 
         # add gradient noise proportional to learning rate
@@ -234,7 +234,7 @@ class DNGPU:
             max_vals.append(varV)
 
         self.gnorm = tf.global_norm(max_vals)
-        self.cost_list = tf.pack(self.cost_list)
+        self.cost_list = tf.stack(self.cost_list)
 
     def prepare_dict(self, batch_xs_list, batch_ys_list, is_training):
         """Prepares a dictionary of input output values for all bins to do training"""

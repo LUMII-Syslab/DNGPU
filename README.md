@@ -15,7 +15,7 @@ Training Speed & Accuracy  |  Genaralization on longer inputs
 
 ## Dependencies
 
-This project currently requires the dev version of TensorFlow 0.10.0 available on Github: https://github.com/tensorflow/tensorflow/releases/tag/v0.10.0.
+This project requires TensorFlow version 1.0
 
 ## Running Experiment
 

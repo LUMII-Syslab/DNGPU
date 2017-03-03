@@ -132,7 +132,7 @@ def showPicture(test_length, path):
         saver = tf.train.Saver(tf.trainable_variables())
 
         with tf.Session() as sess:
-            sess.run(tf.initialize_all_variables())
+            sess.run(tf.global_variables_initializer())
             saver.restore(sess, model_file)
             if not os.path.exists(path): os.makedirs(path)
 
@@ -161,7 +161,7 @@ with tf.Graph().as_default():
     saver = tf.train.Saver(tf.trainable_variables())
 
     with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
+        sess.run(tf.global_variables_initializer())
         #saver.restore(sess, model_file)
 
         batch_xs, batch_ys = genTrainingData(False)
@@ -240,7 +240,7 @@ while test_length<max_test_length:
         saver = tf.train.Saver(tf.trainable_variables())
 
         with tf.Session() as sess:
-            sess.run(tf.initialize_all_variables())
+            sess.run(tf.global_variables_initializer())
             saver.restore(sess, model_file)
             errors, seq_errors,total = 0, 0, 0
             for iter in range(test_examples/batchSize):
