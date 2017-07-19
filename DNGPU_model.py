@@ -101,7 +101,7 @@ class DNGPU:
         #input is of shape [batch, 1, in_width, in_channels]
         #shiftFilter is of shape [1, filter_width, in_channels, 1]
 
-        shifted_maps = self.num_units/3
+        shifted_maps = self.num_units//3
         baseFilter = [[0,1,0]]*(self.num_units-2*shifted_maps)+[[1,0,0]]*shifted_maps+[[0,0,1]]*shifted_maps
         shiftFilter = tf.constant(np.transpose(baseFilter), dtype=tf.float32)
         shiftFilter = tf.expand_dims(tf.expand_dims(shiftFilter,0), 3)
@@ -188,7 +188,7 @@ class DNGPU:
         # Create all bins and calculate losses for them
 
         with vs.variable_scope("var_lengths"):
-            for seqLength,itemCount, ind in zip(self.bins, self.count_list, xrange(num_sizes)):
+            for seqLength,itemCount, ind in zip(self.bins, self.count_list, range(num_sizes)):
                 x_in = tf.placeholder("int32", [itemCount, seqLength])
                 y_in = tf.placeholder("int64", [itemCount, seqLength])
                 self.x_input.append(x_in)
@@ -275,8 +275,8 @@ class DNGPU:
         feed_dict = self.prepare_dict(batch_xs_list, batch_ys_list, 0)
         acc, loss, costs, norm11, regul, beta2 = sess.run((self.accuracy, self.base_cost, self.cost_list, self.gnorm, self.sat_loss, self.beta2_rate),
                                                           feed_dict=feed_dict)
-        print "Loss= " + "{:.6f}".format(loss) + \
-              ", Accuracy= " + "{:.6f}".format(acc), norm11, beta2,
+        print( "Loss= " + "{:.6f}".format(loss) + \
+              ", Accuracy= " + "{:.6f}".format(acc), norm11, beta2,)
         return loss
 
     def train(self, sess, batch_xs_list, batch_ys_list, do_dropout=1):

@@ -60,14 +60,14 @@ test_set = {}
 for some_task in all_tasks:
   train_set[some_task] = []
   test_set[some_task] = []
-  for all_max_len in xrange(10000):
+  for all_max_len in range(10000):
     train_set[some_task].append([])
     test_set[some_task].append([])
 
 def collectBins():
   max_length = bins[-1]
   for some_task in all_tasks:
-    for l in xrange(max_length):
+    for l in range(max_length):
       bin_length =pad(l)
       if bin_length != l:
         cur_train = train_set[some_task]
@@ -81,9 +81,9 @@ def collectBins():
 
   #add some shorter instances to train for padding
   for some_task in all_tasks:
-    for ind in xrange(1,len(bins)):
-      small_count = len(train_set[some_task][bins[ind]])/20 # 5% shorter instances
-      for itemNr in xrange(small_count):
+    for ind in range(1,len(bins)):
+      small_count = len(train_set[some_task][bins[ind]])//20 # 5% shorter instances
+      for itemNr in range(small_count):
         smaller_bin = bins[random.randint(0,ind-1)]
         assert len(train_set[some_task][smaller_bin])>0
         item = random.choice(train_set[some_task][smaller_bin])
@@ -116,11 +116,11 @@ def tobcd(num):
 def add(n1, n2, base=10):
   """Add two numbers represented as lower-endian digit lists."""
   k = max(len(n1), len(n2)) + 1
-  d1 = n1 + [0 for _ in xrange(k - len(n1))]
-  d2 = n2 + [0 for _ in xrange(k - len(n2))]
+  d1 = n1 + [0 for _ in range(k - len(n1))]
+  d2 = n2 + [0 for _ in range(k - len(n2))]
   res = []
   carry = 0
-  for i in xrange(k):
+  for i in range(k):
     if d1[i] + d2[i] + carry < base:
       res.append(d1[i] + d2[i] + carry)
       carry = 0
@@ -139,13 +139,13 @@ def init_data(task, length, nbr_cases, nclass):
 """Data initialization."""
 def rand_pair(l, task):
   """Random data pair for a task. Total length should be <= l."""
-  k = (l-1)/2
-  if task == "mulbcd": k=(l-1)/8
+  k = (l-1)//2
+  if task == "mulbcd": k=(l-1)//8
   base = 10
   if task[0] == "b": base = 2
   if task[0] == "q": base = 4
-  d1 = [np.random.randint(base) for _ in xrange(k)]
-  d2 = [np.random.randint(base) for _ in xrange(k)]
+  d1 = [np.random.randint(base) for _ in range(k)]
+  d2 = [np.random.randint(base) for _ in range(k)]
   if task in ["add", "badd", "qadd"]:
     res = add(d1, d2, base)
   elif task in ["mul", "bmul", "qmul", "mulbcd"]:
@@ -172,23 +172,23 @@ def rand_pair(l, task):
 
 def rand_dup_pair(l, nclass):
   """Random data pair for duplication task. Total length should be <= l."""
-  k = l/2
-  x = [np.random.randint(nclass - 1) + 1 for _ in xrange(k)]
-  inp = x + [0 for _ in xrange(l - k)]
-  res = x + x + [0 for _ in xrange(l - 2*k)]
+  k = l//2
+  x = [np.random.randint(nclass - 1) + 1 for _ in range(k)]
+  inp = x + [0 for _ in range(l - k)]
+  res = x + x + [0 for _ in range(l - 2*k)]
   return inp, res
 
 def rand_rev2_pair(l, nclass):
   """Random data pair for reverse2 task. Total length should be <= l."""
   inp = [(np.random.randint(nclass - 1) + 1,
-          np.random.randint(nclass - 1) + 1) for _ in xrange(l/2)]
+          np.random.randint(nclass - 1) + 1) for _ in range(l//2)]
   res = [i for i in reversed(inp)]
   return [x for p in inp for x in p], [x for p in res for x in p]
 
 def rand_search_pair(l, nclass):
   """Random data pair for search task. Total length should be <= l."""
   inp = [(np.random.randint(nclass - 1) + 1,
-          np.random.randint(nclass - 1) + 1) for _ in xrange(l-1/2)]
+          np.random.randint(nclass - 1) + 1) for _ in range(l-1//2)]
   q = np.random.randint(nclass - 1) + 1
   res = 0
   for (k, v) in reversed(inp):
@@ -198,8 +198,8 @@ def rand_search_pair(l, nclass):
 
 def rand_kvsort_pair(l, nclass):
   """Random data pair for key-value sort. Total length should be <= l."""
-  keys = [(np.random.randint(nclass - 1) + 1, i) for i in xrange(l/2)]
-  vals = [np.random.randint(nclass - 1) + 1 for _ in xrange(l/2)]
+  keys = [(np.random.randint(nclass - 1) + 1, i) for i in range(l//2)]
+  vals = [np.random.randint(nclass - 1) + 1 for _ in range(l//2)]
   kv = [(k, vals[i]) for (k, i) in keys]
   sorted_kv = [(k, vals[i]) for (k, i) in sorted(keys)]
   return [x for p in kv for x in p], [x for p in sorted_kv for x in p]
@@ -215,7 +215,7 @@ def spec(inp, task, nclass):
   elif task == "incr":
     carry = 1
     res = []
-    for i in xrange(len(inp)):
+    for i in range(len(inp)):
       if inp[i] + carry < nclass:
         res.append(inp[i] + carry)
         carry = 0
@@ -228,9 +228,9 @@ def spec(inp, task, nclass):
   elif task == "right":
     return [inp[-1]]
   elif task == "left-shift":
-    return [inp[l-1] for l in xrange(len(inp))]
+    return [inp[l-1] for l in range(len(inp))]
   elif task == "right-shift":
-    return [inp[l+1] for l in xrange(len(inp))]
+    return [inp[l+1] for l in range(len(inp))]
   else:
     print_out("Unknown spec for task " + str(task))
     sys.exit()
@@ -247,7 +247,7 @@ def get_input_output_pair(l,task,nclass):
     elif task == "kvsort":
       i, t = rand_kvsort_pair(l,nclass)
     else:
-      i = [np.random.randint(nclass - 1) + 1 for ii in xrange(l)]
+      i = [np.random.randint(nclass - 1) + 1 for ii in range(l)]
       t = spec(i,task, nclass)
     return i,t
 
@@ -306,7 +306,7 @@ def get_batch(max_length, batch_size, do_train, task, offset=None, preset=None):
       counters = train_counters
     while not cur_set[length]:
       length -= 1
-  for b in xrange(batch_size):
+  for b in range(batch_size):
     if preset is None:
       cur_ind = counters[length]
       elem = cur_set[length][cur_ind]
@@ -321,8 +321,8 @@ def get_batch(max_length, batch_size, do_train, task, offset=None, preset=None):
       elem = preset
     inp, target = elem[0], elem[1]
     assert len(inp) <= length
-    inputs.append(inp + [0 for l in xrange(max_length - len(inp))])
-    targets.append(target + [0 for l in xrange(max_length - len(target))])
+    inputs.append(inp + [0 for l in range(max_length - len(inp))])
+    targets.append(target + [0 for l in range(max_length - len(target))])
   new_input = inputs
   new_target = targets
   return new_input, new_target
@@ -351,28 +351,28 @@ def accuracy(inpt, output, target, batch_size, nprint):
     #  print_len += 1
     print_out("    i: " + " ".join([str(i) for i in inp]))
     print_out("    o: " +
-              " ".join([str(output[l]) for l in xrange(print_len)]))
+              " ".join([str(output[l]) for l in range(print_len)]))
     print_out("    t: " +
-              " ".join([str(target[l]) for l in xrange(print_len)]))
+              " ".join([str(target[l]) for l in range(print_len)]))
   decoded_target = target
   decoded_output = output
   total = 0
   errors = 0
-  seq = [0 for b in xrange(batch_size)]
-  for l in xrange(len(decoded_output[0])):
-    for b in xrange(batch_size):
+  seq = [0 for b in range(batch_size)]
+  for l in range(len(decoded_output[0])):
+    for b in range(batch_size):
       #if decoded_target[b][l] > 0:
       total += 1
       if decoded_output[b][l] != decoded_target[b][l]:
         seq[b] = 1
         errors += 1
   e = 0  # Previous error index
-  for _ in xrange(min(nprint, sum(seq))):
+  for _ in range(min(nprint, sum(seq))):
     while seq[e] == 0:
       e += 1
     task_print(inpt[e],decoded_output[e],decoded_target[e])
     e += 1
-  # for b in xrange(nprint - errors):
+  # for b in range(nprint - errors):
   #   task_print(inpt[b], decoded_output[b], decoded_target[b])
   return errors, total, sum(seq)
 

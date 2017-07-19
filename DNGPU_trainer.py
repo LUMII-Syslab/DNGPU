@@ -89,7 +89,7 @@ np.set_printoptions(linewidth=2000)
 
 #prepare training and test data
 max_length = data_gen.bins[-1]
-for l in xrange(1,max_length+1):
+for l in range(1,max_length+1):
     data_gen.init_data(task, l, data_size, n_input)
 data_gen.collectBins()
 data_gen.init_data(task, data_gen.forward_max, test_data_size, n_input)
@@ -99,7 +99,7 @@ data_gen.init_data(task, data_gen.forward_max, test_data_size, n_input)
 def genTrainingData(forTraining):
     x=[]
     y=[]
-    for i in xrange(len(data_gen.bins)):
+    for i in range(len(data_gen.bins)):
         seq_len = data_gen.bins[i]
         seq_count=countList[i]
         data, labels = data_gen.get_batch(seq_len,seq_count,forTraining, task)
@@ -137,7 +137,7 @@ def showPicture(test_length, path):
             if not os.path.exists(path): os.makedirs(path)
 
             batch_xs, batch_ys = genTestData(test_length, 1)
-            print batch_xs, batch_ys
+            print(batch_xs, batch_ys)
             mem = tester.getAllMem(sess, batch_xs, batch_ys)
             mem = np.squeeze(mem, 1)
 
@@ -174,8 +174,8 @@ with tf.Graph().as_default():
         start_time = time.time()
         batch_xs_long, batch_ys_long = genTestData(data_gen.forward_max, batchSize)
         long_accuracy, _ = learner.getAccuracy(sess, batch_xs_long, batch_ys_long)
-        print "Iter", 0, "time =", 0,
-        print "accuracy on length", data_gen.forward_max, "=", long_accuracy
+        print("Iter", 0, "time =", 0,)
+        print("accuracy on length", data_gen.forward_max, "=", long_accuracy)
 
         while step < training_iters:
             if step % display_step == 0:
@@ -184,11 +184,11 @@ with tf.Graph().as_default():
                 step_time = time.time() - start_time
                 #start_time = time.time()
                 lr = learner.getLearningRate(sess)
-                print "Iter", step, "time =",step_time,"lr =",lr, 'max_loss =', loss, 'min_accuracy =', acc,'avgLoss =', avgLoss,
+                print("Iter", step, "time =",step_time,"lr =",lr, 'max_loss =', loss, 'min_accuracy =', acc,'avgLoss =', avgLoss,)
 
                 batch_xs_long, batch_ys_long = genTestData(data_gen.forward_max, batchSize)
                 long_accuracy, _=learner.getAccuracy(sess, batch_xs_long, batch_ys_long)
-                print "accuracy on length",data_gen.forward_max,"=", long_accuracy
+                print("accuracy on length",data_gen.forward_max,"=", long_accuracy)
 
                 # set saturation weight proportional to average loss
                 learner.set_saturation_weight(sess, avgLoss / (avgRegul + 1e-20))
@@ -211,7 +211,7 @@ with tf.Graph().as_default():
             acc = min(acc, acc1)
             step += 1
 
-        print "Optimization Finished!"
+        print("Optimization Finished!")
         saver.save(sess, model_file)
 
 # create execution trace images
@@ -243,7 +243,7 @@ while test_length<max_test_length:
             sess.run(tf.global_variables_initializer())
             saver.restore(sess, model_file)
             errors, seq_errors,total = 0, 0, 0
-            for iter in range(test_examples/batchSize):
+            for iter in range(test_examples//batchSize):
                 batch_xs, batch_ys = genTestData(test_length, batchSize)
                 acc1, test_result=tester.getAccuracy(sess, batch_xs, batch_ys)
                 er, tot,seq_er=  data_gen.accuracy(batch_xs[0], test_result, batch_ys[0], batchSize, 0)
@@ -252,8 +252,8 @@ while test_length<max_test_length:
                 total+=tot
 
             acc_real = 1.0-float(errors)/total
-            print "Testing length:", test_length, "accuracy=", acc_real, "errors =", errors, "incorrect sequences=",seq_errors
-    test_length=test_length*4/3
+            print("Testing length:", test_length, "accuracy=", acc_real, "errors =", errors, "incorrect sequences=",seq_errors)
+    test_length=test_length*4//3
 
 
 
