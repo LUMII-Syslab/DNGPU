@@ -1,5 +1,10 @@
 # DNGPU
-Code for reproducing key results in the paper "Improving the Neural GPU Architecture for Algorithm Learning" by Karlis Freivalds, Renars Liepins.
+Code for reproducing key results in the paper
+
+**Improving the Neural GPU Architecture for Algorithm Learning**  
+by _Karlis Freivalds, Renars Liepins_
+  
+ [[`arXiv`](https://arxiv.org/abs/1702.08727)] [[`BibTeX`](#CitingDNGPU)] [[`OpenReview`](https://openreview.net/forum?id=HkxmF0sqyQ)]
 
 The code demonstrates several improvements to the Neural GPU that substantially reduces training time and improves generalization. The improvements are: 1) hard nonlinearities with saturation cost; 2) diagonal gates that can be applied to active-memory models.
 
@@ -24,3 +29,16 @@ We provide the source code to run the training example:
 ```bash
 python DNGPU_trainer.py
 ```
+
+
+## <a name="CitingDNGPU"></a>Citing DNGPU
+
+If you use DNGPU, please use the following BibTeX entry.
+
+```
+  @InProceedings{Freivalds2018DNGPU,
+  title={Improving the Neural GPU Architecture for Algorithm Learning},
+  author={Karlis Freivalds, Renars Liepins},
+  journal={The ICML workshop Neural Abstract Machines \& Program Induction v2 (NAMPI)},
+  year={2018}
+  }
